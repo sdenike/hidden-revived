@@ -77,6 +77,11 @@ class StatusBarController {
     
     deinit {
         NotificationCenter.default.removeObserver(self)
+        timer?.invalidate()
+        timer = nil
+        if let statusItem = self.btnAlwaysHidden {
+            NSStatusBar.system.removeStatusItem(statusItem)
+        }
     }
     
     @objc private func handleScreenParametersChanged() {
@@ -269,20 +274,19 @@ extension StatusBarController {
     }
     @objc private func toggleStatusBarIfNeeded() {
         updateCollapsedLengths()
-        
+
         if Preferences.alwaysHiddenSectionEnabled {
-            if let existing = self.btnAlwaysHidden {
-                NSStatusBar.system.removeStatusItem(existing)
+            if self.btnAlwaysHidden == nil {
+                self.btnAlwaysHidden = NSStatusBar.system.statusItem(withLength: btnAlwaysHiddenLength)
+                if let button = btnAlwaysHidden?.button {
+                    button.image = self.imgIconLine
+                    button.appearsDisabled = true
+                }
+                self.btnAlwaysHidden?.autosaveName = "hiddenbar_terminate"
             }
-            self.btnAlwaysHidden = NSStatusBar.system.statusItem(withLength: btnAlwaysHiddenLength)
-            if let button = btnAlwaysHidden?.button {
-                button.image = self.imgIconLine
-                button.appearsDisabled = true
-            }
-            self.btnAlwaysHidden?.autosaveName = "hiddenbar_terminate"
         } else {
-            if let existing = self.btnAlwaysHidden {
-                NSStatusBar.system.removeStatusItem(existing)
+            if let statusItem = self.btnAlwaysHidden {
+                NSStatusBar.system.removeStatusItem(statusItem)
             }
             self.btnAlwaysHidden = nil
         }
