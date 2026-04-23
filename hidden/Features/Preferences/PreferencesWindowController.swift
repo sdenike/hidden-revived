@@ -32,19 +32,29 @@ class PreferencesWindowController: NSWindowController {
     
     override func windowDidLoad() {
         super.windowDidLoad()
-        centerSegmentedToolbarItem()
+        configurePreferencesToolbar()
         updateVC()
     }
 
-    private func centerSegmentedToolbarItem() {
-        // macOS's flexible-space items do not reliably center a toolbar item
-        // when the titlebar has traffic lights consuming leading space.
-        // Explicitly mark the segmented control as the centered item.
+    private func configurePreferencesToolbar() {
         guard #available(macOS 11.0, *),
-              let toolbar = window?.toolbar,
-              let item = toolbar.items.first(where: { $0.view is NSSegmentedControl })
+              let window = window,
+              let toolbar = window.toolbar
         else { return }
-        toolbar.centeredItemIdentifier = item.itemIdentifier
+
+        // .preference style is designed for tab-picker preferences windows:
+        // it tightens the titlebar, integrates the toolbar, and centers the
+        // primary toolbar item in the full window width.
+        window.toolbarStyle = .preference
+
+        guard let segmentedItem = toolbar.items.first(where: { $0.view is NSSegmentedControl })
+        else { return }
+
+        if #available(macOS 13.0, *) {
+            toolbar.centeredItemIdentifiers = [segmentedItem.itemIdentifier]
+        } else {
+            toolbar.centeredItemIdentifier = segmentedItem.itemIdentifier
+        }
     }
     
     override func keyDown(with event: NSEvent) {
