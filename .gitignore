@@ -1,4 +1,7 @@
 
+# Claude Code local session state
+.claude/
+
 # Created by https://www.gitignore.io/api/macos,swift
 # Edit at https://www.gitignore.io/?templates=macos,swift
 
