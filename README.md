@@ -1,75 +1,71 @@
 <p align="center">
-	<img width="200" height="200" margin-right="100%" src="https://github.com/dwarvesf/hidden/blob/develop/img/icon_512%402x.png?raw=true">
+	<img width="200" height="200" margin-right="100%" src="img/icon_512%402x.png">
 </p>
 <p align="center">
-	<a href="https://webuild.community">
-		<img src="https://raw.githubusercontent.com/webuild-community/badge/master/svg/love.svg" />
-	</a>
-	<a href="https://github.com/dwarvesf/hidden/releases/latest">
+	<a href="https://github.com/sdenike/hidden/releases/latest">
  		<img src="https://img.shields.io/badge/download-latest-brightgreen.svg" alt="download">
 	</a>
-	<a href="https://img.shields.io/badge/platform-macOS-lightgrey.svg">
- 		<img src="https://img.shields.io/badge/platform-macOS-lightgrey.svg" alt="platform">
-	</a>
-	<a href="https://img.shields.io/badge/requirements-macOS High Sierra+-ff69b4.svg">
- 		<img src="https://img.shields.io/badge/requirements-macOS High Sierra+-ff69b4.svg" alt="systemrequirements">
-	</a>
+	<img src="https://img.shields.io/badge/platform-macOS-lightgrey.svg" alt="platform">
+	<img src="https://img.shields.io/badge/requirements-macOS%2010.13+-ff69b4.svg" alt="systemrequirements">
 </p>
 
-## Hidden Bar
-Hidden Bar lets you hide menu bar items to give your Mac a cleaner look.
+# Hidden Bar Revived
+
+**Hidden Bar Revived** is a maintained continuation of the original [Hidden Bar](https://github.com/dwarvesf/hidden) by [Dwarves Foundation](https://github.com/dwarvesf), an ultra-light macOS utility that hides menu bar items to give your Mac a cleaner look.
+
+The upstream project has been inactive for an extended period. This fork picks up where it left off — merging the most-requested community fixes, resolving the memory leak affecting macOS Sequoia/Tahoe, and keeping the app compatible with current macOS releases.
 
 <p align="center">
 	<img width="400" src="img/screen1.png">
 	<img width="400" src="img/screen2.png">
 </p>
 
-## 🚀 Install
+## What's new in 2.0
 
-###  App Store
+- Fixes the runaway memory leak that was growing to several GB on macOS Sequoia and Tahoe
+- Correctly hides menu bar items on ultrawide and multi-monitor setups
+- Preserves collapsed state when displays are connected or disconnected
+- Additional localizations: Italian, Ukrainian, Turkish
+- Minimum macOS version raised to 10.13 (High Sierra) to match current Xcode requirements
 
-[![AppStore](img/appstore.svg)](https://itunes.apple.com/app/hidden-bar/id1452453066)
+## Install
 
-### Others
-
-The Hidden Bar is notarized before distributed out side App Store. It's safe to use 👍
-
-#### Using Homebrew
-
+### Homebrew (once we publish the cask)
 ```
-brew install --cask hiddenbar
+brew install --cask hiddenbar-revived
 ```
 
-#### Manual download
+### Manual download
+- [Download the latest release](https://github.com/sdenike/hidden/releases/latest)
+- Drag the app to your `Applications` folder
+- Launch it and drag the icon in your menu bar (hold `⌘`) to the right so it sits between some other icons
 
-- [Download latest version](https://github.com/dwarvesf/hidden/releases/latest)
-- Open and drag the app to the Applications folder.
-- Launch Hidden and drag the icon in your menu bar (hold CMD) to the right so it is between some other icons.
+### Mac App Store
+Coming soon.
 
-## 🕹 Usage
+## Usage
 
-* `⌘` + drag to move the Hidden icons around in the menu bar.
-* Click the Arrow icon to hide menu bar items.
+- `⌘` + drag to move the Hidden Bar icons around in the menu bar
+- Click the arrow icon to hide menu bar items
 
 <p align="center">
 	<img src="img/tutorial.gif">
 </p>
 
-## ✨<a href="https://github.com/dwarvesf/hidden/graphs/contributors">Contributors</a>
-
-This project exists thanks to all the people who contribute. Thank you guys so much 👏
-
-[![](https://sourcerer.io/fame/phucledien/dwarvesf/hidden/images/0)](https://sourcerer.io/fame/phucledien/dwarvesf/hidden/links/0)[![](https://sourcerer.io/fame/phucledien/dwarvesf/hidden/images/1)](https://sourcerer.io/fame/phucledien/dwarvesf/hidden/links/1)[![](https://sourcerer.io/fame/phucledien/dwarvesf/hidden/images/2)](https://sourcerer.io/fame/phucledien/dwarvesf/hidden/links/2)[![](https://sourcerer.io/fame/phucledien/dwarvesf/hidden/images/3)](https://sourcerer.io/fame/phucledien/dwarvesf/hidden/links/3)[![](https://sourcerer.io/fame/phucledien/dwarvesf/hidden/images/4)](https://sourcerer.io/fame/phucledien/dwarvesf/hidden/links/4)[![](https://sourcerer.io/fame/phucledien/dwarvesf/hidden/images/5)](https://sourcerer.io/fame/phucledien/dwarvesf/hidden/links/5)[![](https://sourcerer.io/fame/phucledien/dwarvesf/hidden/images/6)](https://sourcerer.io/fame/phucledien/dwarvesf/hidden/links/6)[![](https://sourcerer.io/fame/phucledien/dwarvesf/hidden/images/7)](https://sourcerer.io/fame/phucledien/dwarvesf/hidden/links/7)
-
-Please read [this](CONTRIBUTING.md) before you make a contribution.
-
 ## Requirements
-macOS version >= 10.13
 
-## You may also like
-- [Blurred](https://github.com/dwarvesf/Blurred) - A macOS utility that helps reduce distraction by dimming your inactive noise
-- [Micro Sniff](https://github.com/dwarvesf/micro-sniff) - An ultra-light macOS utility that notify whenever your micro-device is being used
-- [VimMotion](https://github.com/dwarvesf/VimMotionPublic) Vim style shortcut for MacOS
+- macOS 10.13 High Sierra or later
+
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request. Bug reports and focused PRs welcome — the goal of this fork is to keep Hidden Bar working, not to add major new features.
+
+## Credits
+
+- **Original authors:** Thanh Nguyen, Phuc Le Dien, and the [Dwarves Foundation](https://github.com/dwarvesf) team
+- **Contributors:** See the full list on the [original repository](https://github.com/dwarvesf/hidden/graphs/contributors)
+- **Maintainer of this fork:** [Shelby DeNike](https://github.com/sdenike)
+
 ## License
 
-MIT &copy; [Dwarves Foundation](https://github.com/dwarvesf)
+MIT — see [LICENSE](LICENSE). © 2019 Dwarves Foundation, © 2026 Shelby DeNike.
