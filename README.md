@@ -2,7 +2,7 @@
 	<img width="200" height="200" margin-right="100%" src="img/icon_512%402x.png">
 </p>
 <p align="center">
-	<a href="https://github.com/sdenike/hidden/releases/latest">
+	<a href="https://github.com/sdenike/hidden-revived/releases/latest">
  		<img src="https://img.shields.io/badge/download-latest-brightgreen.svg" alt="download">
 	</a>
 	<img src="https://img.shields.io/badge/platform-macOS-lightgrey.svg" alt="platform">
@@ -36,7 +36,7 @@ brew install --cask hiddenbar-revived
 ```
 
 ### Manual download
-- [Download the latest release](https://github.com/sdenike/hidden/releases/latest)
+- [Download the latest release](https://github.com/sdenike/hidden-revived/releases/latest)
 - Drag the app to your `Applications` folder
 - Launch it and drag the icon in your menu bar (hold `⌘`) to the right so it sits between some other icons
 
