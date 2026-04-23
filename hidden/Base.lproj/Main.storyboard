@@ -316,7 +316,7 @@
                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                         <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="href" value="https://github.com/sdenike/hidden"/>
+                                                            <userDefinedRuntimeAttribute type="string" keyPath="href" value="https://github.com/sdenike/hidden-revived"/>
                                                         </userDefinedRuntimeAttributes>
                                                     </textField>
                                                 </subviews>
