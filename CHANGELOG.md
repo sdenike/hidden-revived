@@ -1,0 +1,65 @@
+# Changelog
+
+All notable changes to Hidden Bar Revived are documented in this file.
+
+This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Dates are shown in the developer's local time zone.
+
+Hidden Bar Revived is a community-maintained continuation of the original [Hidden Bar](https://github.com/dwarvesf/hidden) by Dwarves Foundation. Versions prior to 2.0.0 were released by the original authors; see the [upstream repository](https://github.com/dwarvesf/hidden) for that history.
+
+## [2.0.5] — 2026-04-23
+
+### Fixed
+- Preferences window titlebar is now a compact single row with the General/About pill fully contained. On macOS 26 Tahoe the previous toolbar style rendered taller than expected and the pill visually spilled below the titlebar.
+
+## [2.0.4] — 2026-04-23
+
+### Fixed
+- General/About segmented control is now centered across the full width of the preferences window. Explicit `toolbarStyle = .preference` and `centeredItemIdentifiers` replace the earlier reliance on flexible-space items, which did not properly center past the traffic-light controls.
+
+## [2.0.3] — 2026-04-23
+
+### Fixed
+- Initial attempt at centering the General/About segmented control via `centeredItemIdentifier`. Superseded by 2.0.4.
+
+## [2.0.2] — 2026-04-23
+
+### Fixed
+- Preferences window no longer overlaps the macOS menu bar area. Removed `titlebarAppearsTransparent` and `fullSizeContentView` from the window style mask, which on modern macOS caused the tutorial's mock menu-bar imagery to bleed through the transparent titlebar behind the toolbar.
+- Toolbar no longer shows `Custom View` fallback labels. Changed `displayMode` from `labelOnly` to `iconOnly`.
+
+### Changed
+- Repository references updated from `sdenike/hidden` to `sdenike/hidden-revived` in README and the About screen's source link.
+
+## [2.0.1] — 2026-04-23
+
+### Added
+- About screen updated for the fork: title reads "Hidden Bar Revived", footer credits both Dwarves Foundation and the fork maintainer, source link points at the active fork. The Dwarves Foundation homepage, Twitter, and email links remain unchanged as original-author credits.
+- `scripts/install.sh` — single-command build + install workflow for iterative testing. Builds Release with ad-hoc signing, gracefully quits any running instance (up to 10 s for `applicationWillTerminate` to complete), replaces `/Applications/Hidden Bar Revived.app`, and optionally launches.
+
+## [2.0.0] — 2026-04-23
+
+First release of the Hidden Bar Revived fork.
+
+### Fixed
+- **Ultra-wide and multi-monitor hiding.** Collapse length is now computed from the widest connected display rather than the focused one, and the cap was raised from 4,000 pt to macOS's actual 10,000 pt maximum. Collapsed state is also preserved across display connect/disconnect events. Adapted from upstream [PR #354](https://github.com/dwarvesf/hidden/pull/354) (laveez). Fixes upstream #314, #345, #353.
+- **Runaway memory leak causing multi-GB usage on macOS Sequoia / Tahoe.** Addresses the 2.89 GB leak reported in upstream #326. Fix combines:
+  - `NSLayoutConstraint.deactivate(view.constraints)` before `removeFromSuperview` in `NSStackView.removeAllSubViews` (primary leak source — constraints retained the removed `NSImageView` instances that the tutorial view recreated on every preference change).
+  - `[weak self]` on `DispatchQueue.main.asyncAfter` closures in `StatusBarController` to prevent retain cycles.
+  - `deinit` cleanup in `StatusBarController` and `PreferencesViewController` for `NotificationCenter` observers, and in `LauncherApplication.AppDelegate` for `DistributedNotificationCenter` observers.
+  - Always-hidden `NSStatusItem` is now created once and reused instead of being destroyed and recreated on every toggle.
+  - Timer invalidation and status item removal in `StatusBarController.deinit`.
+
+  Adapted from upstream [PR #346](https://github.com/dwarvesf/hidden/pull/346) (Rob Mulder) and [PR #335](https://github.com/dwarvesf/hidden/pull/335) (huynguyenh).
+- Debug `print(keyCode)` statement that leaked user hotkey data to the system console was removed.
+
+### Added
+- Italian localization ([upstream #196](https://github.com/dwarvesf/hidden/pull/196), Gian Marco Cinalli).
+- Ukrainian localization ([upstream #226](https://github.com/dwarvesf/hidden/pull/226), GGorAA).
+- Turkish localization ([upstream #320](https://github.com/dwarvesf/hidden/pull/320), Mete Kılıç).
+
+### Changed
+- Application renamed to **Hidden Bar Revived**.
+- Main app bundle identifier changed to `com.sdenike.hiddenbar` (was `com.dwarvesv.minimalbar`).
+- Launcher helper bundle identifier changed to `com.sdenike.hiddenbar.launcher` (was `com.dwarvesv.LauncherApplication`).
+- Minimum macOS deployment target raised from 10.12 to **10.13** (High Sierra). Required by the current Xcode toolchain and the `HotKey` dependency. A further raise to macOS 13 is planned when the app migrates to `SMAppService` for launch at login.
+- Copyright line now reads `© 2019 Dwarves Foundation · © 2026 Shelby DeNike`; the original MIT license and attribution are preserved.
