@@ -34,9 +34,49 @@ PROJECT="Hidden Bar.xcodeproj"
 SCHEME="Hidden Bar"
 DERIVED="build"
 APP_NAME="Hidden Bar Revived"
+BUNDLE_ID="com.sdenike.hiddenbar"
 APP_BUNDLE="$DERIVED/Build/Products/$CONFIG/$APP_NAME.app"
 INSTALL_PATH="/Applications/$APP_NAME.app"
 LOG=/tmp/hiddenbarrevived-build.log
+
+is_running() {
+    pgrep -f "$APP_NAME.app/Contents/MacOS/" >/dev/null 2>&1
+}
+
+graceful_quit() {
+    if ! is_running; then
+        echo "==> No running instance to quit."
+        return 0
+    fi
+
+    echo "==> Asking running instance to quit..."
+    # Prefer bundle ID (survives renames / multiple copies); fall back to app name.
+    osascript -e "tell application id \"$BUNDLE_ID\" to quit" 2>/dev/null \
+        || osascript -e "tell application \"$APP_NAME\" to quit" 2>/dev/null \
+        || true
+
+    # Wait up to 10s for applicationWillTerminate + status-item cleanup.
+    local waited=0
+    while is_running; do
+        if (( waited >= 20 )); then
+            echo "==> Graceful quit timed out after 10s, sending SIGTERM..."
+            pkill -TERM -f "$APP_NAME.app/Contents/MacOS/" 2>/dev/null || true
+            sleep 2
+            break
+        fi
+        sleep 0.5
+        waited=$(( waited + 1 ))
+    done
+
+    # Truly last-resort.
+    if is_running; then
+        echo "==> Process still alive after SIGTERM, force-killing..."
+        pkill -KILL -f "$APP_NAME.app/Contents/MacOS/" 2>/dev/null || true
+        sleep 1
+    fi
+
+    echo "==> Old instance stopped."
+}
 
 echo "==> Building $APP_NAME ($CONFIG)..."
 rm -rf "$DERIVED"
@@ -60,11 +100,7 @@ if [[ ! -d "$APP_BUNDLE" ]]; then
     exit 1
 fi
 
-echo "==> Quitting any running instance..."
-osascript -e "tell application \"$APP_NAME\" to quit" 2>/dev/null || true
-pkill -f "$APP_NAME.app/Contents/MacOS" 2>/dev/null || true
-# Give launchd a moment to release the bundle.
-sleep 1
+graceful_quit
 
 echo "==> Installing to $INSTALL_PATH..."
 if [[ -e "$INSTALL_PATH" ]]; then
