@@ -42,13 +42,18 @@ class PreferencesWindowController: NSWindowController {
               let toolbar = window.toolbar
         else { return }
 
-        // .preference style is designed for tab-picker preferences windows:
-        // it tightens the titlebar, integrates the toolbar, and centers the
-        // primary toolbar item in the full window width.
-        window.toolbarStyle = .preference
+        // Single-row tight titlebar that doesn't grow vertically.
+        window.toolbarStyle = .unifiedCompact
+        toolbar.sizeMode = .small
 
         guard let segmentedItem = toolbar.items.first(where: { $0.view is NSSegmentedControl })
         else { return }
+
+        // Shrink the pill so it fits cleanly inside the compact titlebar
+        // instead of spilling below it.
+        if let segmented = segmentedItem.view as? NSSegmentedControl {
+            segmented.controlSize = .small
+        }
 
         if #available(macOS 13.0, *) {
             toolbar.centeredItemIdentifiers = [segmentedItem.itemIdentifier]
