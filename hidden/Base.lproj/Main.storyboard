@@ -99,7 +99,7 @@
                                     <segmentedControl key="view" verticalHuggingPriority="750" id="wAJ-zO-0Lg">
                                         <rect key="frame" x="0.0" y="14" width="145" height="23"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fillEqually" style="texturedSquare" trackingMode="selectOne" id="B2x-1Q-Aei">
+                                        <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fillEqually" style="automatic" trackingMode="selectOne" id="B2x-1Q-Aei">
                                             <font key="font" metaFont="system"/>
                                             <segments>
                                                 <segment label="General" selected="YES"/>
@@ -116,7 +116,6 @@
                             <defaultToolbarItems>
                                 <toolbarItem reference="jr4-A4-Yp1"/>
                                 <toolbarItem reference="NIO-JJ-pjq"/>
-                                <toolbarItem reference="jr4-A4-Yp1"/>
                             </defaultToolbarItems>
                         </toolbar>
                         <connections>
@@ -136,7 +135,7 @@
             <objects>
                 <viewController storyboardIdentifier="aboutVC" id="3gK-Dw-PWX" customClass="AboutViewController" customModule="Hidden_Bar" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="PLL-3M-w8R">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="481"/>
+                        <rect key="frame" x="0.0" y="0.0" width="668" height="481"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <box autoresizesSubviews="NO" boxType="custom" borderType="none" title="Box" translatesAutoresizingMaskIntoConstraints="NO" id="bFi-aV-ejJ">
@@ -396,7 +395,7 @@
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="bFi-aV-ejJ" secondAttribute="trailing" id="8EJ-cF-Z18"/>
-                            <constraint firstItem="bFi-aV-ejJ" firstAttribute="top" secondItem="PLL-3M-w8R" secondAttribute="top" id="8Up-AV-Bug"/>
+                            <constraint firstItem="bFi-aV-ejJ" firstAttribute="top" secondItem="PLL-3M-w8R" secondAttribute="top" constant="28" id="8Up-AV-Bug"/>
                             <constraint firstItem="bFi-aV-ejJ" firstAttribute="leading" secondItem="PLL-3M-w8R" secondAttribute="leading" id="JRD-wf-dfa"/>
                         </constraints>
                     </view>
@@ -847,7 +846,7 @@ between sections to configure Hidden Bar.</string>
                             <constraint firstAttribute="trailing" secondItem="I1C-Eb-1or" secondAttribute="trailing" constant="16" id="CA2-wY-DeJ"/>
                             <constraint firstAttribute="trailing" secondItem="Jjd-1G-63n" secondAttribute="trailing" id="GVj-UF-nJ0"/>
                             <constraint firstItem="aZz-jM-wCs" firstAttribute="top" secondItem="Jjd-1G-63n" secondAttribute="bottom" constant="16" id="Xcs-xV-HYq"/>
-                            <constraint firstItem="Jjd-1G-63n" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="Z5l-HH-7S3"/>
+                            <constraint firstItem="Jjd-1G-63n" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="28" id="Z5l-HH-7S3"/>
                             <constraint firstAttribute="bottom" secondItem="I1C-Eb-1or" secondAttribute="bottom" constant="20" id="eLg-ja-xQU"/>
                             <constraint firstItem="I1C-Eb-1or" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="16" id="k8p-4H-39t"/>
                             <constraint firstItem="I1C-Eb-1or" firstAttribute="top" secondItem="aZz-jM-wCs" secondAttribute="bottom" constant="20" id="qzh-10-c0O"/>
