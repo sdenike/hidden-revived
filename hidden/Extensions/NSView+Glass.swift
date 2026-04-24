@@ -15,15 +15,16 @@ extension NSView {
     /// Inserts a full-bleed `NSVisualEffectView` at the back of the view
     /// hierarchy. Must be called after the view has been loaded from its
     /// storyboard (e.g. inside `viewDidLoad`).
+    ///
+    /// Uses the `.titlebar` material so the content area renders with the
+    /// same translucency as the window's titlebar — on macOS 26 Tahoe that
+    /// means Liquid Glass flows from titlebar through content with no
+    /// visible seam. Available on every supported macOS version (10.10+).
     func installGlassBackground() {
         let effect = NSVisualEffectView()
         effect.blendingMode = .behindWindow
         effect.state = .followsWindowActiveState
-        if #available(macOS 10.14, *) {
-            effect.material = .underWindowBackground
-        } else {
-            effect.material = .sidebar
-        }
+        effect.material = .titlebar
         effect.translatesAutoresizingMaskIntoConstraints = false
 
         addSubview(effect, positioned: .below, relativeTo: subviews.first)
