@@ -42,23 +42,36 @@ class PreferencesWindowController: NSWindowController {
               let toolbar = window.toolbar
         else { return }
 
-        // Single-row tight titlebar that doesn't grow vertically.
+        // Tight single-row titlebar. Centering the pill across the full
+        // window on macOS 26 Tahoe is unreliable under any toolbar style
+        // (the system centers only within the post-traffic-lights region),
+        // so the storyboard right-aligns it via a single leading flex
+        // space instead — matching many modern macOS utility windows.
         window.toolbarStyle = .unifiedCompact
-        toolbar.sizeMode = .small
+
+        // Let the content view extend behind the titlebar and make the
+        // titlebar transparent so the content's `NSVisualEffectView`
+        // shows through uninterrupted. This is how the titlebar and
+        // content reach exactly the same material; otherwise Tahoe's
+        // Liquid Glass titlebar renders subtly darker than any public
+        // material enum we can set on an `NSVisualEffectView`.
+        window.styleMask.insert(.fullSizeContentView)
+        window.titlebarAppearsTransparent = true
+
+        // Remove the hairline separator below the titlebar.
+        if #available(macOS 11.4, *) {
+            window.titlebarSeparatorStyle = .none
+        }
 
         guard let segmentedItem = toolbar.items.first(where: { $0.view is NSSegmentedControl })
         else { return }
 
-        // Shrink the pill so it fits cleanly inside the compact titlebar
-        // instead of spilling below it.
+        // Regular size gives the texturedSquare pill enough internal
+        // padding and text weight to read clearly once titlebar and
+        // content share the same material — `.small` squished the label
+        // vertically and pinched its ends under Liquid Glass.
         if let segmented = segmentedItem.view as? NSSegmentedControl {
-            segmented.controlSize = .small
-        }
-
-        if #available(macOS 13.0, *) {
-            toolbar.centeredItemIdentifiers = [segmentedItem.itemIdentifier]
-        } else {
-            toolbar.centeredItemIdentifier = segmentedItem.itemIdentifier
+            segmented.controlSize = .regular
         }
     }
     
