@@ -1,0 +1,118 @@
+name: Release
+
+# Build, sign, notarize, and publish Hidden Bar Revived when a `v*` tag is
+# pushed (e.g. `v2.0.6`). Uploads the signed + notarized zip as a release
+# asset and prints the sha256 for the Homebrew cask.
+#
+# Repository secrets required (Settings → Secrets and variables → Actions):
+#
+#   MACOS_CERTIFICATE          — Developer ID Application cert + private
+#                                key exported as .p12 and base64-encoded:
+#                                  base64 -i DeveloperID.p12 | pbcopy
+#   MACOS_CERTIFICATE_PASSWORD — password protecting the .p12
+#   KEYCHAIN_PASSWORD          — any value used for the throwaway
+#                                CI keychain created per run
+#   APPLE_ID                   — Apple ID email tied to the developer account
+#   APPLE_TEAM_ID              — 485WH9DHS4
+#   APPLE_APP_PASSWORD         — app-specific password generated at appleid.apple.com
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to release (e.g. v2.0.6) — must already exist"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish
+    runs-on: macos-14
+
+    env:
+      SIGNING_IDENTITY: "Developer ID Application: Shelby Denike (485WH9DHS4)"
+      NOTARY_PROFILE: "HiddenBarNotary"
+      APP_NAME: "Hidden Bar Revived"
+      SCHEME: "Hidden Bar"
+      PROJECT: "Hidden Bar.xcodeproj"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+          fetch-depth: 0
+
+      - name: Resolve version
+        id: version
+        run: |
+          VERSION="$(grep -m1 'MARKETING_VERSION = ' "$PROJECT/project.pbxproj" | sed -E 's/.*= *([^;]+);.*/\1/' | tr -d ' ')"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Releasing v$VERSION"
+
+      - name: Import signing certificate
+        env:
+          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          KEYCHAIN="$RUNNER_TEMP/build.keychain-db"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+
+          CERT_PATH="$RUNNER_TEMP/cert.p12"
+          echo -n "$MACOS_CERTIFICATE" | base64 --decode -o "$CERT_PATH"
+          security import "$CERT_PATH" -P "$MACOS_CERTIFICATE_PASSWORD" \
+              -A -t cert -f pkcs12 -k "$KEYCHAIN"
+          security list-keychain -d user -s "$KEYCHAIN" login.keychain
+          security set-key-partition-list -S apple-tool:,apple: \
+              -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          rm -f "$CERT_PATH"
+
+      - name: Store notarization credentials
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+        run: |
+          xcrun notarytool store-credentials "$NOTARY_PROFILE" \
+              --apple-id "$APPLE_ID" \
+              --team-id "$APPLE_TEAM_ID" \
+              --password "$APPLE_APP_PASSWORD"
+
+      - name: Build, sign, notarize, staple, package
+        run: ./scripts/release.sh
+
+      - name: Upload release asset
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+          TAG_INPUT: ${{ github.event.inputs.tag }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          TAG="${TAG_INPUT:-$REF_NAME}"
+          ARTIFACT="dist/HiddenBarRevived-$VERSION.zip"
+
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+              gh release create "$TAG" \
+                  --title "v$VERSION" \
+                  --notes-file CHANGELOG.md \
+                  "$ARTIFACT"
+          else
+              gh release upload "$TAG" "$ARTIFACT" --clobber
+          fi
+
+          SHA="$(/usr/bin/shasum -a 256 "$ARTIFACT" | awk '{ print $1 }')"
+          {
+              echo "## Cask values"
+              echo '```ruby'
+              echo "version \"$VERSION\""
+              echo "sha256 \"$SHA\""
+              echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
