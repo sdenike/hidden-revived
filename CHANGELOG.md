@@ -6,6 +6,20 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 
 Hidden Bar Revived is a community-maintained continuation of the original [Hidden Bar](https://github.com/dwarvesf/hidden) by Dwarves Foundation. Versions prior to 2.0.0 were released by the original authors; see the [upstream repository](https://github.com/dwarvesf/hidden) for that history.
 
+## [2.0.6] — 2026-04-24
+
+### Fixed
+- **Constraint accumulation in the tutorial view.** Toggling "Enable always hidden section" used to add a new `centerXAnchor` constraint to the arrow image views on every rebuild without deactivating the previous one. Auto Layout would log unsatisfiable-constraint warnings and, over many toggles, could break the arrow alignment. Constraints are now stored on the view controller and deactivated before each rebuild.
+- **Crash risk from missing tutorial assets.** `NSImage(named:)!` was force-unwrapped for every mock menu-bar icon in the Preferences tutorial; any rename in `Assets.xcassets` (notably the consistently-misspelled `seprated` / `seprated_1`) would crash on Preferences open. Replaced with a nil-safe lookup that falls back to a blank image and emits a debug assertion.
+- "Always hidden section" help popover (the `?` next to the "Enable always hidden section" checkbox) no longer expands off-screen. The tutorial text now wraps at 340pt with proper padding, and the popover is positioned relative to the help button rather than the entire Preferences content view.
+- Help popover typography — section headings ("Steps to enable:" / "Steps to view always hidden icons:") render as semibold secondary-label subtitles with extra leading space, and body paragraphs get comfortable line height.
+
+### Changed
+- **Preferences and About windows rebuilt for Liquid Glass.** Content area now carries an `NSVisualEffectView` backdrop (`.underWindowBackground` on macOS 11+, `.sidebar` fallback on 10.13) so the window's Glass titlebar flows through the content instead of butting against banded opaque backgrounds. Nested `NSBox` fills are cleared programmatically at view load rather than requiring storyboard surgery.
+- **About screen links are now fork-first.** The upstream "Know more about us", "Follow us on Twitter", and "Email us" rows are replaced with **View on GitHub**, **Download latest release**, **Report an issue**, and **View MIT License** — all pointing at `github.com/sdenike/hidden-revived`. Icons switched to SF Symbols (`chevron.left.forwardslash.chevron.right`, `arrow.down.circle.fill`, `exclamationmark.bubble.fill`, `doc.text.fill`) on macOS 11 and later.
+- Version label on the About screen uses monospaced digits (macOS 10.15+) for a cleaner build-stamp feel.
+- "Settings" heading on the General tab reduced from 22pt systemBold / labelColor to 13pt systemBold / secondaryLabelColor, matching macOS HIG conventions for a group label inside a Preferences pane.
+
 ## [2.0.5] — 2026-04-23
 
 ### Fixed

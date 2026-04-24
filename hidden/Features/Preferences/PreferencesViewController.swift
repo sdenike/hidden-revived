@@ -40,12 +40,19 @@ class PreferencesViewController: NSViewController {
     public var listening = false {
         didSet {
             let isHighlight = listening
-            
+
             DispatchQueue.main.async { [weak self] in
                 self?.btnShortcut.highlight(isHighlight)
             }
         }
     }
+
+    // Retained so we can deactivate the previous set before re-adding on
+    // every tutorial rebuild — otherwise Auto Layout accumulates a new
+    // center-X constraint each toggle, which eventually logs unsatisfiable
+    // constraint warnings and can break the arrow layout.
+    private var hiddenArrowConstraint: NSLayoutConstraint?
+    private var alwayHiddenArrowConstraint: NSLayoutConstraint?
     
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -54,6 +61,8 @@ class PreferencesViewController: NSViewController {
     //MARK: - VC Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.installGlassBackground()
+        view.clearOpaqueBoxFills()
         updateData()
         loadHotkey()
         createTutorialView()
@@ -208,71 +217,62 @@ extension PreferencesViewController {
     func hideStatusBar() {
         lblAlwayHidden.isHidden = true
         arrowPointToAlwayHiddenImage.isHidden = true
-        statusBarStackView.removeAllSubViews()
-        let imageWidth: CGFloat = 16
-        
-        
-        let images = ["ico_1","ico_2","ico_3","seprated", "ico_collapse","ico_4","ico_5","ico_6","ico_7"].map { imageName in
-            NSImageView(image: NSImage(named: imageName)!)
-        }
-        
-        
-        for image in images {
-            statusBarStackView.addArrangedSubview(image)
-            image.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                image.widthAnchor.constraint(equalToConstant: imageWidth),
-                image.heightAnchor.constraint(equalToConstant: imageWidth)
-                
-            ])
-            if #available(OSX 10.14, *) {
-                image.contentTintColor = .labelColor
-            } else {
-                // Fallback on earlier versions
-            }
-        }
-        let dateTimeLabel = NSTextField()
-        dateTimeLabel.stringValue = Date.dateString() + " " + Date.timeString()
-        dateTimeLabel.translatesAutoresizingMaskIntoConstraints = false
-        dateTimeLabel.isBezeled = false
-        dateTimeLabel.isEditable = false
-        dateTimeLabel.sizeToFit()
-        dateTimeLabel.backgroundColor = .clear
-        statusBarStackView.addArrangedSubview(dateTimeLabel)
-        NSLayoutConstraint.activate([dateTimeLabel.heightAnchor.constraint(equalToConstant: imageWidth)
-        ])
-       
-        NSLayoutConstraint.activate([
-            arrowPointToHiddenImage.centerXAnchor.constraint(equalTo: statusBarStackView.arrangedSubviews[3].centerXAnchor)
-        ])
+        rebuildStatusBar(with: ["ico_1", "ico_2", "ico_3", "seprated", "ico_collapse", "ico_4", "ico_5", "ico_6", "ico_7"])
+
+        deactivateArrowConstraints()
+        hiddenArrowConstraint = arrowPointToHiddenImage.centerXAnchor.constraint(
+            equalTo: statusBarStackView.arrangedSubviews[3].centerXAnchor
+        )
+        hiddenArrowConstraint?.isActive = true
     }
-    
+
     func alwayHideStatusBar() {
         lblAlwayHidden.isHidden = false
         arrowPointToAlwayHiddenImage.isHidden = false
+        rebuildStatusBar(with: ["ico_1", "ico_2", "ico_3", "ico_4", "seprated_1", "ico_5", "ico_6", "seprated", "ico_collapse", "ico_7"])
+
+        deactivateArrowConstraints()
+        alwayHiddenArrowConstraint = arrowPointToAlwayHiddenImage.centerXAnchor.constraint(
+            equalTo: statusBarStackView.arrangedSubviews[4].centerXAnchor
+        )
+        alwayHiddenArrowConstraint?.isActive = true
+        hiddenArrowConstraint = arrowPointToHiddenImage.centerXAnchor.constraint(
+            equalTo: statusBarStackView.arrangedSubviews[7].centerXAnchor
+        )
+        hiddenArrowConstraint?.isActive = true
+    }
+
+    private func deactivateArrowConstraints() {
+        hiddenArrowConstraint?.isActive = false
+        alwayHiddenArrowConstraint?.isActive = false
+        hiddenArrowConstraint = nil
+        alwayHiddenArrowConstraint = nil
+    }
+
+    // Rebuilds the mock menu-bar preview in the tutorial. Uses a nil-safe
+    // image lookup so a missing / renamed asset no longer crashes the app
+    // on Preferences open; layout is preserved because each slot still
+    // produces an `NSImageView`, just with a blank image in the rare case
+    // the asset disappears.
+    private func rebuildStatusBar(with imageNames: [String]) {
         statusBarStackView.removeAllSubViews()
         let imageWidth: CGFloat = 16
-        
-        
-        let images = ["ico_1","ico_2","ico_3","ico_4", "seprated_1","ico_5","ico_6","seprated", "ico_collapse","ico_7"].map { imageName in
-            NSImageView(image: NSImage(named: imageName)!)
-        }
-        
-        
-        for image in images {
-            statusBarStackView.addArrangedSubview(image)
-            image.translatesAutoresizingMaskIntoConstraints = false
+
+        for name in imageNames {
+            let image = NSImage(named: name)
+            assert(image != nil, "Missing tutorial asset: \(name)")
+            let imageView = NSImageView(image: image ?? NSImage())
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            statusBarStackView.addArrangedSubview(imageView)
             NSLayoutConstraint.activate([
-                image.widthAnchor.constraint(equalToConstant: imageWidth),
-                image.heightAnchor.constraint(equalToConstant: imageWidth)
-                
+                imageView.widthAnchor.constraint(equalToConstant: imageWidth),
+                imageView.heightAnchor.constraint(equalToConstant: imageWidth),
             ])
-            if #available(OSX 10.14, *) {
-                image.contentTintColor = .labelColor
-            } else {
-                // Fallback on earlier versions
+            if #available(macOS 10.14, *) {
+                imageView.contentTintColor = .labelColor
             }
         }
+
         let dateTimeLabel = NSTextField()
         dateTimeLabel.stringValue = Date.dateString() + " " + Date.timeString()
         dateTimeLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -281,14 +281,8 @@ extension PreferencesViewController {
         dateTimeLabel.sizeToFit()
         dateTimeLabel.backgroundColor = .clear
         statusBarStackView.addArrangedSubview(dateTimeLabel)
-        NSLayoutConstraint.activate([dateTimeLabel.heightAnchor.constraint(equalToConstant: imageWidth)
-        ])
-        
         NSLayoutConstraint.activate([
-            arrowPointToAlwayHiddenImage.centerXAnchor.constraint(equalTo: statusBarStackView.arrangedSubviews[4].centerXAnchor)
-        ])
-        NSLayoutConstraint.activate([
-            arrowPointToHiddenImage.centerXAnchor.constraint(equalTo: statusBarStackView.arrangedSubviews[7].centerXAnchor)
+            dateTimeLabel.heightAnchor.constraint(equalToConstant: imageWidth),
         ])
     }
     
@@ -297,31 +291,89 @@ extension PreferencesViewController {
     }
     
     private func showHowToUseAlwayHiddenPopover(sender: NSButton) {
-        let controller = NSViewController()
-        let label = NSTextField()
-        let text = NSLocalizedString("Tutorial text", comment: "Step by step tutorial")
-        
-        label.stringValue = text
-        label.isBezeled = false
-        label.isEditable = false
-        let view = NSView()
-        view.addSubview(label)
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: view.topAnchor),
-            label.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            label.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            label.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
+        let rawText = NSLocalizedString("Tutorial text", comment: "Step by step tutorial")
+        let attributed = tutorialAttributedString(from: rawText)
+
+        let label = NSTextField(labelWithAttributedString: attributed)
+        label.isSelectable = false
+        label.lineBreakMode = .byWordWrapping
+        label.maximumNumberOfLines = 0
+        label.preferredMaxLayoutWidth = 340
         label.translatesAutoresizingMaskIntoConstraints = false
-        controller.view = view
-        
+
+        let container = NSView()
+        container.addSubview(label)
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: container.topAnchor, constant: 16),
+            label.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -16),
+            label.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 18),
+            label.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -18),
+            label.widthAnchor.constraint(equalToConstant: 340),
+        ])
+
+        let controller = NSViewController()
+        controller.view = container
+        container.layoutSubtreeIfNeeded()
+
         let popover = NSPopover()
         popover.contentViewController = controller
-        popover.contentSize = controller.view.frame.size
-        
+        popover.contentSize = container.fittingSize
         popover.behavior = .transient
         popover.animates = true
-        
-        popover.show(relativeTo: self.view.bounds, of: sender , preferredEdge: NSRectEdge.maxX)
+
+        popover.show(relativeTo: sender.bounds, of: sender, preferredEdge: .maxX)
+    }
+
+    // Formats the localized tutorial string so section headings (lines
+    // ending in ":") read as semibold secondary-label subtitles and body
+    // paragraphs get comfortable line height + paragraph spacing. Works
+    // across localizations because the pattern (headers with a trailing
+    // colon, numbered items beginning with digit + ".") is preserved in
+    // every translation this project ships.
+    private func tutorialAttributedString(from text: String) -> NSAttributedString {
+        let bodyFont = NSFont.systemFont(ofSize: 13)
+        let headerFont = NSFont.systemFont(ofSize: 13, weight: .semibold)
+
+        let bodyParagraph = NSMutableParagraphStyle()
+        bodyParagraph.paragraphSpacing = 4
+        bodyParagraph.lineHeightMultiple = 1.25
+
+        let headerParagraph = NSMutableParagraphStyle()
+        headerParagraph.paragraphSpacingBefore = 10
+        headerParagraph.paragraphSpacing = 4
+        headerParagraph.lineHeightMultiple = 1.25
+
+        let output = NSMutableAttributedString()
+        let lines = text.components(separatedBy: .newlines)
+
+        for (index, line) in lines.enumerated() {
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            guard !trimmed.isEmpty else { continue }
+
+            let isNumbered = trimmed.range(of: #"^\d+\.\s"#, options: .regularExpression) != nil
+            let isHeader = trimmed.hasSuffix(":") && !isNumbered
+
+            let attributes: [NSAttributedString.Key: Any]
+            if isHeader {
+                attributes = [
+                    .font: headerFont,
+                    .foregroundColor: NSColor.secondaryLabelColor,
+                    .paragraphStyle: index == 0 ? bodyParagraph : headerParagraph,
+                ]
+            } else {
+                attributes = [
+                    .font: bodyFont,
+                    .foregroundColor: NSColor.labelColor,
+                    .paragraphStyle: bodyParagraph,
+                ]
+            }
+
+            if output.length > 0 {
+                output.append(NSAttributedString(string: "\n"))
+            }
+            output.append(NSAttributedString(string: trimmed, attributes: attributes))
+        }
+
+        return output
     }
 }
