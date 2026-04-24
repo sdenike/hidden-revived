@@ -299,31 +299,32 @@ extension PreferencesViewController {
     }
     
     private func showHowToUseAlwayHiddenPopover(sender: NSButton) {
-        let controller = NSViewController()
-        let label = NSTextField()
         let text = NSLocalizedString("Tutorial text", comment: "Step by step tutorial")
-        
-        label.stringValue = text
-        label.isBezeled = false
-        label.isEditable = false
-        let view = NSView()
-        view.addSubview(label)
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: view.topAnchor),
-            label.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            label.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            label.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
+        let label = NSTextField(wrappingLabelWithString: text)
+        label.isSelectable = false
+        label.preferredMaxLayoutWidth = 320
         label.translatesAutoresizingMaskIntoConstraints = false
-        controller.view = view
-        
+
+        let container = NSView()
+        container.addSubview(label)
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: container.topAnchor, constant: 14),
+            label.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -14),
+            label.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 16),
+            label.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -16),
+            label.widthAnchor.constraint(equalToConstant: 320),
+        ])
+
+        let controller = NSViewController()
+        controller.view = container
+        container.layoutSubtreeIfNeeded()
+
         let popover = NSPopover()
         popover.contentViewController = controller
-        popover.contentSize = controller.view.frame.size
-        
+        popover.contentSize = container.fittingSize
         popover.behavior = .transient
         popover.animates = true
-        
-        popover.show(relativeTo: self.view.bounds, of: sender , preferredEdge: NSRectEdge.maxX)
+
+        popover.show(relativeTo: sender.bounds, of: sender, preferredEdge: .maxX)
     }
 }
