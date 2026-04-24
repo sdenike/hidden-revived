@@ -8,6 +8,9 @@ Hidden Bar Revived is a community-maintained continuation of the original [Hidde
 
 ## [2.0.6] — 2026-04-23
 
+### Fixed
+- "Always hidden section" help popover (the `?` next to the "Enable always hidden section" checkbox) no longer expands off-screen. The tutorial text now wraps at 320pt with proper padding, and the popover is positioned relative to the help button rather than the entire Preferences content view.
+
 ### Changed
 - **Preferences and About windows rebuilt for Liquid Glass.** Content area now carries an `NSVisualEffectView` backdrop (`.underWindowBackground` on macOS 11+, `.sidebar` fallback on 10.13) so the window's Glass titlebar flows through the content instead of butting against banded opaque backgrounds. Nested `NSBox` fills are cleared programmatically at view load rather than requiring storyboard surgery.
 - **About screen links are now fork-first.** The upstream "Know more about us", "Follow us on Twitter", and "Email us" rows are replaced with **View on GitHub**, **Download latest release**, **Report an issue**, and **View MIT License** — all pointing at `github.com/sdenike/hidden-revived`. Icons switched to SF Symbols (`chevron.left.forwardslash.chevron.right`, `arrow.down.circle.fill`, `exclamationmark.bubble.fill`, `doc.text.fill`) on macOS 11 and later.
