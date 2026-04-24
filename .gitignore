@@ -128,3 +128,23 @@ DerivedData/
 **/xcshareddata/WorkspaceSettings.xcsettings
 
 # End of https://www.gitignore.io/api/macos,swift
+
+### Release artifacts and signing ###
+# Where scripts/release.sh writes signed + notarized builds.
+dist/
+
+# Certificate exports, CSRs, and raw cert files. These must never be
+# committed — they contain private keys or can be paired back to private
+# keys via Apple Developer account access.
+*.p12
+*.certSigningRequest
+*.cer
+
+# Local environment files that may contain notarization credentials.
+.env
+.env.local
+.env.*.local
+
+# notarytool submission status dumps.
+notarytool-*.json
+notarization-*.json
