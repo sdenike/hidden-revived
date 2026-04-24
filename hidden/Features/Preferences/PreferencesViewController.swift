@@ -54,6 +54,8 @@ class PreferencesViewController: NSViewController {
     //MARK: - VC Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.installGlassBackground()
+        view.clearOpaqueBoxFills()
         updateData()
         loadHotkey()
         createTutorialView()

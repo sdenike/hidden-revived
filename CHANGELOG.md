@@ -6,6 +6,14 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 
 Hidden Bar Revived is a community-maintained continuation of the original [Hidden Bar](https://github.com/dwarvesf/hidden) by Dwarves Foundation. Versions prior to 2.0.0 were released by the original authors; see the [upstream repository](https://github.com/dwarvesf/hidden) for that history.
 
+## [2.0.6] — 2026-04-23
+
+### Changed
+- **Preferences and About windows rebuilt for Liquid Glass.** Content area now carries an `NSVisualEffectView` backdrop (`.underWindowBackground` on macOS 11+, `.sidebar` fallback on 10.13) so the window's Glass titlebar flows through the content instead of butting against banded opaque backgrounds. Nested `NSBox` fills are cleared programmatically at view load rather than requiring storyboard surgery.
+- **About screen links are now fork-first.** The upstream "Know more about us", "Follow us on Twitter", and "Email us" rows are replaced with **View on GitHub**, **Download latest release**, **Report an issue**, and **View MIT License** — all pointing at `github.com/sdenike/hidden-revived`. Icons switched to SF Symbols (`chevron.left.forwardslash.chevron.right`, `arrow.down.circle.fill`, `exclamationmark.bubble.fill`, `doc.text.fill`) on macOS 11 and later.
+- Version label on the About screen uses monospaced digits (macOS 10.15+) for a cleaner build-stamp feel.
+- "Settings" heading on the General tab reduced from 22pt systemBold / labelColor to 13pt systemBold / secondaryLabelColor, matching macOS HIG conventions for a group label inside a Preferences pane.
+
 ## [2.0.5] — 2026-04-23
 
 ### Fixed
