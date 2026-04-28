@@ -6,7 +6,7 @@
  		<img src="https://img.shields.io/badge/download-latest-brightgreen.svg" alt="download">
 	</a>
 	<img src="https://img.shields.io/badge/platform-macOS-lightgrey.svg" alt="platform">
-	<img src="https://img.shields.io/badge/requirements-macOS%2010.13+-ff69b4.svg" alt="systemrequirements">
+	<img src="https://img.shields.io/badge/requirements-macOS%2013+-ff69b4.svg" alt="systemrequirements">
 	<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license"></a>
 </p>
 
@@ -27,7 +27,7 @@ The upstream project has been inactive for an extended period. This fork picks u
 - **Ultrawide and multi-monitor support.** Collapse width is now computed from the widest connected display (up to macOS's 10,000 pt maximum) and collapsed state is preserved across display connect/disconnect events.
 - **Preferences window rebuilt for macOS 26 Tahoe.** Compact titlebar with a centered General/About pill, no more transparent-titlebar bleed-through, no more stray "Custom View" labels.
 - **Additional localizations.** Italian, Ukrainian, and Turkish added to the existing ten languages.
-- **Minimum macOS bumped to 10.13 (High Sierra).** Required by the current Xcode toolchain. A further bump to macOS 13 is planned alongside a migration to `SMAppService` for launch at login.
+- **Minimum macOS raised to 13 (Ventura).** Aligns with Apple's currently-supported macOS releases as of 2026 and lets the codebase drop a stack of `#available` checks, the legacy upstream PNG icon assets, and several compatibility branches that targeted macOS 10.13 → 12. A migration to `SMAppService` for launch-at-login is planned next, which will also retire the LauncherApplication helper target.
 - **Rebranded with full attribution.** App name is now "Hidden Bar Revived" and the About screen credits both Dwarves Foundation and this fork's maintainer.
 
 See [CHANGELOG.md](CHANGELOG.md) for full release notes.
@@ -63,7 +63,7 @@ Coming soon. The fork is being prepared for Mac App Store submission under a new
 
 ## Requirements
 
-- macOS 10.13 (High Sierra) or later
+- macOS 13 (Ventura) or later
 - Apple Silicon and Intel both supported (universal binary)
 
 ## Building from source

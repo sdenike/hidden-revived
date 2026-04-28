@@ -6,6 +6,21 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 
 Hidden Bar Revived is a community-maintained continuation of the original [Hidden Bar](https://github.com/dwarvesf/hidden) by Dwarves Foundation. Versions prior to 2.0.0 were released by the original authors; see the [upstream repository](https://github.com/dwarvesf/hidden) for that history.
 
+## [2.1.0] — 2026-04-28
+
+### Changed
+- **Minimum macOS raised to 13 (Ventura).** Apple's currently-supported macOS releases are 14 (Sonoma), 15 (Sequoia), and 26 (Tahoe); 13 ended security updates in September 2025 but remains a reasonable community-fork floor for Macs from 2017+. The previous 10.13 floor was supporting hardware nine years older than the current line.
+- **Unified `MACOSX_DEPLOYMENT_TARGET = 13.0` across all targets** — main app, launcher helper, and tests. Previously the launcher target was on 10.14 while the main app was on 10.13.
+
+### Removed
+- Five `#available` checks (`macOS 10.14`, `10.15`, `11.0` ×2, `11.4`) that all became unconditional under the new floor — affecting `PreferencesViewController`, `AboutViewController`, `PreferencesWindowController`, and `NSView+Glass`.
+- Legacy upstream icon assets `ico_compass`, `ico_twitter`, `ico_github`, `ico_email`, and `ico_fb` from `Assets.xcassets`. These were the macOS 10.13 fallback for the About screen's links; SF Symbols are now used unconditionally on the new floor.
+- The corresponding `image=` references in `Main.storyboard` and the `<resources>` declarations.
+- The `applySymbol` availability-gated helper in `AboutViewController`; SF Symbols load directly inline.
+
+### Notes for next release
+- Migration from `SMLoginItemSetEnabled` to `SMAppService.mainApp` and removal of the `LauncherApplication` helper target are deferred to 2.1.1 / 2.2.0 — both warrant a focused branch with login-flow testing.
+
 ## [2.0.6] — 2026-04-24
 
 ### Fixed
