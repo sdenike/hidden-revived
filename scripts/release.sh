@@ -53,6 +53,25 @@ echo "==> Releasing $APP_NAME $VERSION ($BUILD_NUMBER)"
 
 # --- Preflight -----------------------------------------------------------
 
+# Apple's App Store Connect requirement (effective 2026-04-28): apps must be
+# built with Xcode 26+ using the macOS 26 SDK. Developer ID notarization
+# does NOT require this, but we enforce it anyway so the artifact we ship
+# is also App Store ready when that path opens up.
+MIN_XCODE_MAJOR=26
+MIN_SDK_MAJOR=26
+XCODE_VERSION="$(xcodebuild -version | head -1 | awk '{ print $2 }')"
+SDK_VERSION="$(xcrun --sdk macosx --show-sdk-version)"
+if [[ "${XCODE_VERSION%%.*}" -lt "$MIN_XCODE_MAJOR" ]]; then
+    echo "Xcode $XCODE_VERSION is older than the required Xcode $MIN_XCODE_MAJOR." >&2
+    echo "Install Xcode 26+ and run 'sudo xcode-select -s /Applications/Xcode.app'." >&2
+    exit 1
+fi
+if [[ "${SDK_VERSION%%.*}" -lt "$MIN_SDK_MAJOR" ]]; then
+    echo "macOS SDK $SDK_VERSION is older than the required macOS $MIN_SDK_MAJOR SDK." >&2
+    exit 1
+fi
+echo "==> Toolchain: Xcode $XCODE_VERSION, macOS SDK $SDK_VERSION"
+
 if ! security find-identity -v -p codesigning | grep -qF "$SIGNING_IDENTITY"; then
     echo "Signing identity not found in keychain: $SIGNING_IDENTITY" >&2
     echo "Available identities:" >&2

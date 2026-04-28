@@ -3,6 +3,20 @@
 This runbook covers cutting a signed + notarized release and updating the
 Homebrew tap. One-time setup is at the bottom.
 
+## SDK and Xcode requirements
+
+As of **2026-04-28**, Apple requires App Store Connect submissions to be
+built with **Xcode 26+ using the macOS 26 SDK**. This requirement does not
+apply to Developer ID notarized distribution (our current channel via
+Homebrew), but we enforce it in both `scripts/release.sh` and the
+`Release` GitHub Actions workflow so every artifact is ready to submit
+to the App Store on day one if we choose to.
+
+`SDKROOT = macosx` in `Hidden Bar.xcodeproj` auto-selects the latest
+installed macOS SDK, so on a Mac with Xcode 26+ installed there's nothing
+manual to do beyond keeping Xcode current. The CI workflow runs on
+`macos-latest` for the same reason.
+
 ## Every release
 
 1. **Bump the version** in `Hidden Bar.xcodeproj/project.pbxproj`

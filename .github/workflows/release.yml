@@ -32,7 +32,10 @@ permissions:
 jobs:
   release:
     name: Build and publish
-    runs-on: macos-14
+    # macos-latest tracks the newest GitHub-hosted macOS image so CI builds
+    # with Xcode 26+ / macOS 26 SDK — required by Apple for any future App
+    # Store Connect submission, and harmless for Developer ID distribution.
+    runs-on: macos-latest
 
     env:
       SIGNING_IDENTITY: "Developer ID Application: Shelby Denike (485WH9DHS4)"
@@ -40,6 +43,8 @@ jobs:
       APP_NAME: "Hidden Bar Revived"
       SCHEME: "Hidden Bar"
       PROJECT: "Hidden Bar.xcodeproj"
+      MIN_XCODE_MAJOR: "26"
+      MIN_SDK_MAJOR: "26"
 
     steps:
       - name: Checkout
@@ -47,6 +52,25 @@ jobs:
         with:
           ref: ${{ github.event.inputs.tag || github.ref }}
           fetch-depth: 0
+
+      - name: Verify Xcode and SDK version
+        run: |
+          XCODE_VERSION="$(xcodebuild -version | head -1 | awk '{ print $2 }')"
+          XCODE_MAJOR="${XCODE_VERSION%%.*}"
+          SDK_VERSION="$(xcrun --sdk macosx --show-sdk-version)"
+          SDK_MAJOR="${SDK_VERSION%%.*}"
+
+          echo "Xcode: $XCODE_VERSION (major $XCODE_MAJOR)"
+          echo "macOS SDK: $SDK_VERSION (major $SDK_MAJOR)"
+
+          if [[ "$XCODE_MAJOR" -lt "$MIN_XCODE_MAJOR" ]]; then
+              echo "::error::Xcode $XCODE_VERSION is older than required Xcode $MIN_XCODE_MAJOR. Apple requires Xcode 26+ for App Store Connect submissions starting 2026-04-28."
+              exit 1
+          fi
+          if [[ "$SDK_MAJOR" -lt "$MIN_SDK_MAJOR" ]]; then
+              echo "::error::macOS SDK $SDK_VERSION is older than required SDK $MIN_SDK_MAJOR. Build would not satisfy Apple's App Store Connect SDK requirement."
+              exit 1
+          fi
 
       - name: Resolve version
         id: version
