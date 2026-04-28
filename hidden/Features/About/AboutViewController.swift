@@ -30,9 +30,7 @@ class AboutViewController: NSViewController {
         guard let version = Bundle.main.releaseVersionNumber,
               let buildNumber = Bundle.main.buildVersionNumber else { return }
         lblVersion.stringValue = "Version \(version) (\(buildNumber))"
-        if #available(macOS 10.15, *) {
-            lblVersion.font = .monospacedDigitSystemFont(ofSize: 13, weight: .regular)
-        }
+        lblVersion.font = .monospacedDigitSystemFont(ofSize: 13, weight: .regular)
     }
 
     // Replaces the legacy upstream "Know more about us / Twitter / open
@@ -45,52 +43,45 @@ class AboutViewController: NSViewController {
             let title: String
             let href: String
             let symbolName: String
-            let legacyAsset: String
         }
 
         let specs: [LinkSpec] = [
             LinkSpec(matchPrefix: "https://dwarves.foundation",
                      title: "View on GitHub",
                      href: "https://github.com/sdenike/hidden-revived",
-                     symbolName: "chevron.left.forwardslash.chevron.right",
-                     legacyAsset: "ico_compass"),
+                     symbolName: "chevron.left.forwardslash.chevron.right"),
             LinkSpec(matchPrefix: "https://twitter.com",
                      title: "Download latest release",
                      href: "https://github.com/sdenike/hidden-revived/releases/latest",
-                     symbolName: "arrow.down.circle.fill",
-                     legacyAsset: "ico_twitter"),
+                     symbolName: "arrow.down.circle.fill"),
             LinkSpec(matchPrefix: "https://github.com/sdenike",
                      title: "Report an issue",
                      href: "https://github.com/sdenike/hidden-revived/issues/new",
-                     symbolName: "exclamationmark.bubble.fill",
-                     legacyAsset: "ico_github"),
+                     symbolName: "exclamationmark.bubble.fill"),
             LinkSpec(matchPrefix: "mailto:",
                      title: "View MIT License",
                      href: "https://github.com/sdenike/hidden-revived/blob/main/LICENSE",
-                     symbolName: "doc.text.fill",
-                     legacyAsset: "ico_email"),
+                     symbolName: "doc.text.fill"),
         ]
 
-        for hyperlink in view.descendants(ofType: HyperlinkTextField.self) {
+        let symbolConfig = NSImage.SymbolConfiguration(pointSize: 18, weight: .regular)
+        let hyperlinks = view.descendants(ofType: HyperlinkTextField.self)
+        let imageViews = view.descendants(ofType: NSImageView.self)
+
+        // Pair each hyperlink with the image view immediately preceding it
+        // in the storyboard's link rows, then apply the new title, href,
+        // and SF Symbol icon together.
+        for hyperlink in hyperlinks {
             guard let spec = specs.first(where: { hyperlink.href.hasPrefix($0.matchPrefix) }) else { continue }
             hyperlink.stringValue = spec.title
             hyperlink.href = spec.href
             hyperlink.toolTip = spec.href
-        }
 
-        for imageView in view.descendants(ofType: NSImageView.self) {
-            guard let currentName = imageView.image?.name(),
-                  let spec = specs.first(where: { $0.legacyAsset == currentName }) else { continue }
-            applySymbol(spec.symbolName, description: spec.title, to: imageView)
+            if let icon = imageViews.first(where: { $0.superview === hyperlink.superview && $0 !== hyperlink }),
+               let symbol = NSImage(systemSymbolName: spec.symbolName, accessibilityDescription: spec.title) {
+                icon.image = symbol.withSymbolConfiguration(symbolConfig)
+                icon.contentTintColor = .labelColor
+            }
         }
-    }
-
-    private func applySymbol(_ name: String, description: String, to imageView: NSImageView) {
-        guard #available(macOS 11.0, *),
-              let symbol = NSImage(systemSymbolName: name, accessibilityDescription: description)
-        else { return }
-        let config = NSImage.SymbolConfiguration(pointSize: 18, weight: .regular)
-        imageView.image = symbol.withSymbolConfiguration(config)
-        imageView.contentTintColor = .labelColor
     }
 }

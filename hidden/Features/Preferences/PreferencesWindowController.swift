@@ -37,10 +37,7 @@ class PreferencesWindowController: NSWindowController {
     }
 
     private func configurePreferencesToolbar() {
-        guard #available(macOS 11.0, *),
-              let window = window,
-              let toolbar = window.toolbar
-        else { return }
+        guard let window = window, let toolbar = window.toolbar else { return }
 
         // Tight single-row titlebar. Centering the pill across the full
         // window on macOS 26 Tahoe is unreliable under any toolbar style
@@ -57,19 +54,14 @@ class PreferencesWindowController: NSWindowController {
         // material enum we can set on an `NSVisualEffectView`.
         window.styleMask.insert(.fullSizeContentView)
         window.titlebarAppearsTransparent = true
-
-        // Remove the hairline separator below the titlebar.
-        if #available(macOS 11.4, *) {
-            window.titlebarSeparatorStyle = .none
-        }
+        window.titlebarSeparatorStyle = .none
 
         guard let segmentedItem = toolbar.items.first(where: { $0.view is NSSegmentedControl })
         else { return }
 
-        // Regular size gives the texturedSquare pill enough internal
+        // Regular size gives the automatic-style pill enough internal
         // padding and text weight to read clearly once titlebar and
-        // content share the same material — `.small` squished the label
-        // vertically and pinched its ends under Liquid Glass.
+        // content share the same material.
         if let segmented = segmentedItem.view as? NSSegmentedControl {
             segmented.controlSize = .regular
         }

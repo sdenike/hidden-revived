@@ -241,7 +241,7 @@
                                                             <constraint firstAttribute="width" constant="24" id="APT-eM-eSU"/>
                                                             <constraint firstAttribute="height" constant="24" id="nho-Qa-Yy9"/>
                                                         </constraints>
-                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="ico_compass" id="Fni-Bp-VZz"/>
+                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="Fni-Bp-VZz"/>
                                                     </imageView>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jmL-Oh-IlC" customClass="HyperlinkTextField" customModule="Hidden_Bar" customModuleProvider="target">
                                                         <rect key="frame" x="30" y="4" width="128" height="16"/>
@@ -273,7 +273,7 @@
                                                             <constraint firstAttribute="height" constant="24" id="lfy-Or-pRi"/>
                                                             <constraint firstAttribute="width" constant="24" id="urd-ld-QXS"/>
                                                         </constraints>
-                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="ico_twitter" id="tB4-GY-gGd"/>
+                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="tB4-GY-gGd"/>
                                                     </imageView>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="c5D-4V-z75" customClass="HyperlinkTextField" customModule="Hidden_Bar" customModuleProvider="target">
                                                         <rect key="frame" x="30" y="4" width="125" height="16"/>
@@ -305,7 +305,7 @@
                                                             <constraint firstAttribute="width" constant="24" id="H7h-gc-veH"/>
                                                             <constraint firstAttribute="height" constant="24" id="oEv-o4-RfL"/>
                                                         </constraints>
-                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="ico_github" id="Abo-SQ-xfQ"/>
+                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="Abo-SQ-xfQ"/>
                                                     </imageView>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6si-3e-Hzw" customClass="HyperlinkTextField" customModule="Hidden_Bar" customModuleProvider="target">
                                                         <rect key="frame" x="30" y="4" width="178" height="16"/>
@@ -337,7 +337,7 @@
                                                             <constraint firstAttribute="height" constant="24" id="6Xd-Lv-Slo"/>
                                                             <constraint firstAttribute="width" constant="24" id="xzN-t4-Zfa"/>
                                                         </constraints>
-                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="ico_email" id="K3d-Co-Iq1"/>
+                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="K3d-Co-Iq1"/>
                                                     </imageView>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KzE-2n-Rp9" customClass="HyperlinkTextField" customModule="Hidden_Bar" customModuleProvider="target">
                                                         <rect key="frame" x="30" y="4" width="55" height="16"/>
@@ -886,10 +886,6 @@ between sections to configure Hidden Bar.</string>
         <image name="ico_6" width="12" height="12"/>
         <image name="ico_7" width="13" height="12"/>
         <image name="ico_collapse" width="7" height="12"/>
-        <image name="ico_compass" width="372" height="384"/>
-        <image name="ico_email" width="384" height="384"/>
-        <image name="ico_github" width="496" height="484"/>
-        <image name="ico_twitter" width="512" height="416"/>
         <image name="seprated" width="2" height="13"/>
     </resources>
 </document>

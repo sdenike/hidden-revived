@@ -19,7 +19,7 @@ extension NSView {
     /// Uses the `.titlebar` material so the content area renders with the
     /// same translucency as the window's titlebar — on macOS 26 Tahoe that
     /// means Liquid Glass flows from titlebar through content with no
-    /// visible seam. Available on every supported macOS version (10.10+).
+    /// visible seam.
     func installGlassBackground() {
         let effect = NSVisualEffectView()
         effect.blendingMode = .behindWindow
