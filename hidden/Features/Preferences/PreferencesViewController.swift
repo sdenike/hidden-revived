@@ -268,9 +268,7 @@ extension PreferencesViewController {
                 imageView.widthAnchor.constraint(equalToConstant: imageWidth),
                 imageView.heightAnchor.constraint(equalToConstant: imageWidth),
             ])
-            if #available(macOS 10.14, *) {
-                imageView.contentTintColor = .labelColor
-            }
+            imageView.contentTintColor = .labelColor
         }
 
         let dateTimeLabel = NSTextField()
