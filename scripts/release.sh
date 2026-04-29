@@ -59,7 +59,10 @@ echo "==> Releasing $APP_NAME $VERSION ($BUILD_NUMBER)"
 # is also App Store ready when that path opens up.
 MIN_XCODE_MAJOR=26
 MIN_SDK_MAJOR=26
-XCODE_VERSION="$(xcodebuild -version | head -1 | awk '{ print $2 }')"
+# `awk 'NR==1'` instead of `| head -1` — head exits after one line and
+# triggers SIGPIPE on the upstream `xcodebuild`, which combined with
+# `set -euo pipefail` would silently kill the script with exit 141.
+XCODE_VERSION="$(xcodebuild -version | awk 'NR==1 { print $2 }')"
 SDK_VERSION="$(xcrun --sdk macosx --show-sdk-version)"
 if [[ "${XCODE_VERSION%%.*}" -lt "$MIN_XCODE_MAJOR" ]]; then
     echo "Xcode $XCODE_VERSION is older than the required Xcode $MIN_XCODE_MAJOR." >&2
@@ -103,6 +106,7 @@ xcodebuild \
     DEVELOPMENT_TEAM=485WH9DHS4 \
     CODE_SIGNING_REQUIRED=YES \
     CODE_SIGNING_ALLOWED=YES \
+    CODE_SIGN_INJECT_BASE_ENTITLEMENTS=NO \
     OTHER_CODE_SIGN_FLAGS="--timestamp --options runtime" \
     build
 
