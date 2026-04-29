@@ -1,11 +1,13 @@
 ## Privacy Policy
 
-Dwarves Foundation built the Hidden Bar app as an Open Source app. This app is provided by Dwarves Foundation at no cost and is intended for use as is.
+**Hidden Bar Revived** is an open-source macOS utility distributed at no cost. It is a community-maintained fork of [Hidden Bar](https://github.com/dwarvesf/hidden) by Dwarves Foundation, with the same privacy posture: the app collects no personal data and connects to no third-party services.
 
-**Information Collection and Use**
+### What Hidden Bar Revived stores
 
-The app does NOT use any third party services that may collect information used to identify you.
+- **Local user preferences** — your hidden-section configuration, the optional global keyboard shortcut, and similar settings — saved via the standard macOS preferences system at `~/Library/Preferences/com.sdenike.hiddenbar.plist`. These never leave your Mac.
+- **No analytics, telemetry, or crash reporting.** Nothing is uploaded anywhere.
+- **No network connections** are made by the app itself. macOS may report a code-signing or notarization check to Apple the first time you launch a downloaded build; that check is performed by macOS, not by Hidden Bar Revived.
 
-**Contact Us**
+### Source and reporting
 
-If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us at macos@d.foundation.
+The full source is available at [github.com/sdenike/hidden-revived](https://github.com/sdenike/hidden-revived). Privacy questions, issues, or suggestions can be filed at [github.com/sdenike/hidden-revived/issues](https://github.com/sdenike/hidden-revived/issues).

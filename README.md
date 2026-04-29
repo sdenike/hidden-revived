@@ -42,10 +42,12 @@ See [CHANGELOG.md](CHANGELOG.md) for full release notes.
 
 ### Homebrew
 
-Coming soon — once the first public release ships, the cask will be:
+```sh
+brew tap sdenike/hidden-revived
+brew install --cask hidden-revived
 ```
-brew install --cask hiddenbar-revived
-```
+
+The cask lives in [`sdenike/homebrew-hidden-revived`](https://github.com/sdenike/homebrew-hidden-revived) and pulls the signed + notarized `.zip` directly from this repo's GitHub Releases.
 
 ### Mac App Store
 
