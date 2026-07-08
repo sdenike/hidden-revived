@@ -82,7 +82,7 @@ Alternatively, open `Hidden Bar.xcodeproj` in Xcode, set your Development Team u
 
 ## Contributing
 
-Bug reports and focused PRs are welcome. The goal of this fork is to keep Hidden Bar working — not to add major new features. Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a PR.
+Focused PRs are welcome. The goal of this fork is to keep Hidden Bar working — not to add major new features. Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a PR.
 
 ## Credits
 
